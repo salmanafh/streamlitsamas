@@ -107,6 +107,7 @@ def createInvoice(nomor, terima_dari, npwp, untuk, pekerjaan, jenis_muatan, volu
 
     # Save the workbook
     workbook.save('invoice.xlsx')
+    return True
  
 st.subheader("Buat Laporan Otomatis")
 uploaded_file = st.file_uploader('Upload File Excel')
@@ -133,7 +134,7 @@ tanggal = st.text_input(label='Tanggal: ', placeholder=f"Sekarang: {sekarang}", 
 atas_nama = st.text_input(label='Atas Nama: ', placeholder="Nama", value='')
 
 filename = "Invoice {nomor}.xlsx".format(nomor=nomor)
-invoice = "invoice.xlsx"
+invoice = False
 col1, col2 = st.columns(2)
 with col1:
     if st.button('Buat Invoice'):
@@ -143,6 +144,7 @@ with col2:
         st.download_button(label = 'Download Invoice',
                             data=f.read(),
                             file_name=filename,
+                            disabled=False if invoice else True,
                             mime='application/vnd.ms-excel',)
 st.subheader("Monitoring Cash In - Out")
 # Load data from Excel file

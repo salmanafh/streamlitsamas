@@ -11,13 +11,12 @@ st.set_page_config(
     page_icon=":chart_with_upwards_trend:"
 )
 
-muatan = {
-    "Cangkang Sawit": 100,
-}
-
-def createInvoice(nomor, terima_dari, npwp, untuk, pekerjaan, jenis_muatan, volume, tanggal, atas_nama):
+def createInvoice(nomor, terima_dari, pekerjaan, jenis_muatan, harga, tanggal, nomor_volume):
     # Specify the path to the Excel file
-    file_path = 'KW-LTMPLB-2023 - Contoh.xlsx'
+    if type(nomor_volume) == str:
+        file_path = 'KW-PERMATA BANK.xlsx'
+    else:
+        file_path = 'KW-LTMPLB-2023 - Contoh.xlsx'
     workbook = openpyxl.load_workbook(file_path)
     # Select the active sheet
     sheet = workbook.active
@@ -33,18 +32,6 @@ def createInvoice(nomor, terima_dari, npwp, untuk, pekerjaan, jenis_muatan, volu
         for cell in row:
             if cell.value == "PT. ALAM MULTI MEGA":
                 cell.value = terima_dari
-    
-    # Rewrite npwp
-    for row in sheet.iter_rows():
-        for cell in row:
-            if cell.value == "90.422.411.0-307.000":
-                cell.value = npwp
-
-    # Rewrite untuk
-    for row in sheet.iter_rows():
-        for cell in row:
-            if cell.value == "Upah Kontraktor a/n PT.SELALU AMAN MANDIRI ABADI SUKSES":
-                cell.value = untuk
                 
     # Rewrite pekerjaan
     for row in sheet.iter_rows():
@@ -58,28 +45,33 @@ def createInvoice(nomor, terima_dari, npwp, untuk, pekerjaan, jenis_muatan, volu
             if cell.value == "Cangkang Sawit":
                 cell.value = jenis_muatan
     
-    # Rewrite volume
+    # Rewrite nomor spk atau volume
     for row in sheet.iter_rows():
         for cell in row:
             if cell.value == 207970:
-                cell.value = volume
+                cell.value = nomor_volume
+            elif cell.value == "Nomor SPK : 065/SPK-PM/CRES/II/2023":
+                cell.value = "Nomor SPK : " + nomor_volume
     
-    harga_jenis_muatan = muatan[jenis_muatan]
-    harga_total = volume * harga_jenis_muatan
     # Rewrite Harga Total
     for row in sheet.iter_rows():
         for cell in row:
             if cell.value == 20797000:
-                cell.value = harga_total
+                cell.value = harga
     
-    ppn = (harga_total * 11) / 100
+    ppn = (harga * 11) / 100
     # Rewrite PPN
     for row in sheet.iter_rows():
         for cell in row:
             if cell.value == "=N14*11%":
                 cell.value = ppn
     
-    bersih = harga_total + ppn 
+    for row in sheet.iter_rows():
+        for cell in row:
+            if cell.value == "=S1":
+                cell.value = jenis_muatan
+    
+    bersih = harga + ppn 
     # Rewrite bersih
     for row in sheet.iter_rows():
         for cell in row:
@@ -96,20 +88,50 @@ def createInvoice(nomor, terima_dari, npwp, untuk, pekerjaan, jenis_muatan, volu
     for row in sheet.iter_rows():
         for cell in row:
             if cell.value == "Palembang, 11 Agustus 2023":
-                cell.value = tempat + ", " + tanggal
-                
-    # Rewrite atas_nama
-    for row in sheet.iter_rows():
-        for cell in row:
-            if cell.value == "Muhamad Sobari":
-                cell.value = atas_nama
+                cell.value = "Palembang, " + tanggal
     
-
     # Save the workbook
     workbook.save('invoice.xlsx')
     return True
  
-st.subheader("Buat Laporan Otomatis")
+# Mendapatkan tanggal dan waktu saat ini
+sekarang = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=7)))
+sekarang = sekarang.strftime("%d-%B-%Y")
+st.header("Buat Invoice")
+nomor = st.text_input(label='Nomor Invoice: ', placeholder="Nomor", value='')
+terima_dari = st.text_input(label='Telah Terima Dari: ', placeholder="Nama Perusahaan", value='')
+pekerjaan = st.text_input(label='Pekerjaan: ', placeholder="Keterangan Pekerjaan", value='')
+jenis_muatan = st.selectbox('Jenis Muatan: ', ("-","Cangkang Sawit", "Cocopeat", "Kopra", "Jagung", "Kelapa", "Sekam", "Pupuk", "Bibit"), placeholder="Pilih Jenis Muatan")
+if jenis_muatan == "-":
+    harga = st.text_input(label="Harga (Rp): ", placeholder="Rp ", value=0)
+    nomor_volume = st.text_input(label="Nomor SPK: ", placeholder="Nomor SPK", value="")
+    harga = int(harga)
+    volume = False
+else:
+    hcol1, hcol2 = st.columns(2)
+    with hcol1:
+        nomor_volume = st.text_input(label='Volume (Kg): ', placeholder="Kg", value=0)
+        nomor_volume = int(nomor_volume)
+    with hcol2: 
+        harga_barang = st.text_input(label='Harga Per Kilo (Rp): ', placeholder="Rp", value=0)
+    harga = nomor_volume * int(harga_barang)
+tanggal = st.date_input('Tanggal: ', datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=7))))
+tanggal = tanggal.strftime("%d %B %Y")
+
+filename = "Invoice {nomor}.xlsx".format(nomor=nomor)
+invoice = False
+col1, col2 = st.columns(2)
+with col1:
+    if st.button('Buat Invoice'):
+        invoice = createInvoice(nomor, terima_dari, pekerjaan, jenis_muatan, harga, tanggal, nomor_volume)
+with col2:
+    with open("invoice.xlsx", "rb") as f:
+        st.download_button(label = 'Download Invoice',
+                            data=f.read(),
+                            file_name=filename,
+                            disabled=False if invoice else True,
+                            mime='application/vnd.ms-excel',)
+st.header("Buat Laporan Otomatis")
 uploaded_file = st.file_uploader('Upload File Excel')
  
 if uploaded_file:
@@ -118,35 +140,7 @@ if uploaded_file:
 
 st.button('Buat Laporan')
 
-# Mendapatkan tanggal dan waktu saat ini
-sekarang = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=7)))
-sekarang = sekarang.strftime("%d-%B-%Y")
-st.subheader("Buat Invoice")
-npwp = st.text_input(label='NPWP: ', placeholder="NPWP", value='')
-nomor = st.text_input(label='Nomor Invoice: ', placeholder="Nomor", value='')
-terima_dari = st.text_input(label='Telah Terima Dari: ', placeholder="Nama Perusahaan", value='')
-untuk = st.text_input(label='Untuk Pembayaran: ', placeholder="Keterangan Pembayaran", value='')
-pekerjaan = st.text_input(label='Pekerjaan: ', placeholder="Keterangan Pekerjaan", value='')
-jenis_muatan = st.selectbox('Jenis Muatan: ', ("Cangkang Sawit", "Cocopeat", "Kopra", "Jagung", "Kelapa", "Sekam", "Pupuk", "Bibit"), placeholder="Pilih Jenis Muatan")
-volume = st.text_input(label='Volume (Kg): ', placeholder="Kg")
-tempat = st.selectbox('Tempat: ', ("Palembang", "Jambi"))
-tanggal = st.text_input(label='Tanggal: ', placeholder=f"Sekarang: {sekarang}", value='')
-atas_nama = st.text_input(label='Atas Nama: ', placeholder="Nama", value='')
-
-filename = "Invoice {nomor}.xlsx".format(nomor=nomor)
-invoice = False
-col1, col2 = st.columns(2)
-with col1:
-    if st.button('Buat Invoice'):
-        invoice = createInvoice(nomor, terima_dari, npwp, untuk, pekerjaan, jenis_muatan, int(volume), tanggal, atas_nama)
-with col2:
-    with open("invoice.xlsx", "rb") as f:
-        st.download_button(label = 'Download Invoice',
-                            data=f.read(),
-                            file_name=filename,
-                            disabled=False if invoice else True,
-                            mime='application/vnd.ms-excel',)
-st.subheader("Monitoring Cash In - Out")
+st.header("Monitoring Cash In - Out")
 # Load data from Excel file
 laporan_cash_in_out = pd.ExcelFile("Contoh Laporan Cash In -Out Januari 23.xlsx")
 cash_df = pd.read_excel(laporan_cash_in_out).fillna(0)

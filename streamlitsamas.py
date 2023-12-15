@@ -19,7 +19,7 @@ muatan = {
 
 def createInvoice(nomor, terima_dari, npwp, untuk, pekerjaan, jenis_muatan, volume, tanggal, atas_nama):
     # Specify the path to the Excel file
-    file_path = 'C:/Users/salma/pyworkspace/KW-LTMPLB-2023 - Contoh.xlsx'
+    file_path = 'KW-LTMPLB-2023 - Contoh.xlsx'
     workbook = openpyxl.load_workbook(file_path)
     # Select the active sheet
     sheet = workbook.active
@@ -148,7 +148,7 @@ with col2:
                             mime='application/vnd.ms-excel',)
 st.subheader("Monitoring Cash In - Out")
 # Load data from Excel file
-laporan_cash_in_out = pd.ExcelFile("C:/Users/salma/pyworkspace/Datasets/Contoh Laporan Cash In -Out Januari 23.xlsx")
+laporan_cash_in_out = pd.ExcelFile("Contoh Laporan Cash In -Out Januari 23.xlsx")
 cash_df = pd.read_excel(laporan_cash_in_out).fillna(0)
 min_date = cash_df.Tanggal.min()
 max_date = cash_df.Tanggal.max()

@@ -5,18 +5,22 @@ import openpyxl
 import streamlit as st
 import pandas as pd
 import datetime
+import streamlit as st
+import pandas as pd
+import os
 
 st.set_page_config(
     page_title="Aplikasi Monitoring Samas",
-    page_icon=":chart_with_upwards_trend:"
+    page_icon=":chart_with_upwards_trend:",
+    layout="wide",
 )
 
 def createInvoice(nomor, terima_dari, pekerjaan, jenis_muatan, harga, tanggal, nomor_volume):
     # Specify the path to the Excel file
     if type(nomor_volume) == str:
-        file_path = 'KW-PERMATA BANK.xlsx'
+        file_path = 'C:/Users/salma/pyworkspace/KW-PERMATA BANK.xlsx'
     else:
-        file_path = 'KW-LTMPLB-2023 - Contoh.xlsx'
+        file_path = 'C:/Users/salma/pyworkspace/KW-LTMPLB-2023 - Contoh.xlsx'
     workbook = openpyxl.load_workbook(file_path)
     # Select the active sheet
     sheet = workbook.active
@@ -91,30 +95,28 @@ def createInvoice(nomor, terima_dari, pekerjaan, jenis_muatan, harga, tanggal, n
                 cell.value = "Palembang, " + tanggal
     
     # Save the workbook
-    workbook.save('invoice.xlsx')
+    sheet.sheet_view.showGridLines = False
+    workbook.save('../invoice.xlsx')
     return True
  
-# Mendapatkan tanggal dan waktu saat ini
-sekarang = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=7)))
-sekarang = sekarang.strftime("%d-%B-%Y")
 st.header("Buat Invoice")
+
+# Create a list of unique values in the column 'Project'
 nomor = st.text_input(label='Nomor Invoice: ', placeholder="Nomor", value='')
 terima_dari = st.text_input(label='Telah Terima Dari: ', placeholder="Nama Perusahaan", value='')
 pekerjaan = st.text_input(label='Pekerjaan: ', placeholder="Keterangan Pekerjaan", value='')
 jenis_muatan = st.selectbox('Jenis Muatan: ', ("-","Cangkang Sawit", "Cocopeat", "Kopra", "Jagung", "Kelapa", "Sekam", "Pupuk", "Bibit"), placeholder="Pilih Jenis Muatan")
 if jenis_muatan == "-":
-    harga = st.text_input(label="Harga (Rp): ", placeholder="Rp ", value=0)
+    harga = st.number_input(label="Harga (Rp): ", placeholder="Rp ", value=0)
     nomor_volume = st.text_input(label="Nomor SPK: ", placeholder="Nomor SPK", value="")
-    harga = int(harga)
     volume = False
 else:
     hcol1, hcol2 = st.columns(2)
     with hcol1:
-        nomor_volume = st.text_input(label='Volume (Kg): ', placeholder="Kg", value=0)
-        nomor_volume = int(nomor_volume)
+        nomor_volume = st.number_input(label='Volume (Kg): ', placeholder="Kg", value=0)
     with hcol2: 
-        harga_barang = st.text_input(label='Harga Per Kilo (Rp): ', placeholder="Rp", value=0)
-    harga = nomor_volume * int(harga_barang)
+        harga_barang = st.number_input(label='Harga Per Kilo (Rp): ', placeholder="Rp", value=0)
+    harga = nomor_volume * harga_barang
 tanggal = st.date_input('Tanggal: ', datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=7))))
 tanggal = tanggal.strftime("%d %B %Y")
 
@@ -125,7 +127,7 @@ with col1:
     if st.button('Buat Invoice'):
         invoice = createInvoice(nomor, terima_dari, pekerjaan, jenis_muatan, harga, tanggal, nomor_volume)
 with col2:
-    with open("invoice.xlsx", "rb") as f:
+    with open("../invoice.xlsx", "rb") as f:
         st.download_button(label = 'Download Invoice',
                             data=f.read(),
                             file_name=filename,
@@ -140,9 +142,9 @@ if uploaded_file:
 
 st.button('Buat Laporan')
 
-st.header("Monitoring Cash In - Out")
+st.header("Dashboard Cash In - Out")
 # Load data from Excel file
-laporan_cash_in_out = pd.ExcelFile("Contoh Laporan Cash In -Out Januari 23.xlsx")
+laporan_cash_in_out = pd.ExcelFile("C:/Users/salma/pyworkspace/Datasets/Contoh Laporan Cash In -Out Januari 23.xlsx")
 cash_df = pd.read_excel(laporan_cash_in_out).fillna(0)
 min_date = cash_df.Tanggal.min()
 max_date = cash_df.Tanggal.max()

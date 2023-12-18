@@ -96,7 +96,7 @@ def createInvoice(nomor, terima_dari, pekerjaan, jenis_muatan, harga, tanggal, n
     
     # Save the workbook
     sheet.sheet_view.showGridLines = False
-    workbook.save('../invoice.xlsx')
+    workbook.save('invoice.xlsx')
     return True
  
 st.header("Buat Invoice")
@@ -127,7 +127,7 @@ with col1:
     if st.button('Buat Invoice'):
         invoice = createInvoice(nomor, terima_dari, pekerjaan, jenis_muatan, harga, tanggal, nomor_volume)
 with col2:
-    with open("../invoice.xlsx", "rb") as f:
+    with open("invoice.xlsx", "rb") as f:
         st.download_button(label = 'Download Invoice',
                             data=f.read(),
                             file_name=filename,

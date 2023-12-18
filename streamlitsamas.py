@@ -18,9 +18,9 @@ st.set_page_config(
 def createInvoice(nomor, terima_dari, pekerjaan, jenis_muatan, harga, tanggal, nomor_volume):
     # Specify the path to the Excel file
     if type(nomor_volume) == str:
-        file_path = 'C:/Users/salma/pyworkspace/KW-PERMATA BANK.xlsx'
+        file_path = 'KW-PERMATA BANK.xlsx'
     else:
-        file_path = 'C:/Users/salma/pyworkspace/KW-LTMPLB-2023 - Contoh.xlsx'
+        file_path = 'KW-LTMPLB-2023 - Contoh.xlsx'
     workbook = openpyxl.load_workbook(file_path)
     # Select the active sheet
     sheet = workbook.active
@@ -144,7 +144,7 @@ st.button('Buat Laporan')
 
 st.header("Dashboard Cash In - Out")
 # Load data from Excel file
-laporan_cash_in_out = pd.ExcelFile("C:/Users/salma/pyworkspace/Datasets/Contoh Laporan Cash In -Out Januari 23.xlsx")
+laporan_cash_in_out = pd.ExcelFile("Contoh Laporan Cash In -Out Januari 23.xlsx")
 cash_df = pd.read_excel(laporan_cash_in_out).fillna(0)
 min_date = cash_df.Tanggal.min()
 max_date = cash_df.Tanggal.max()

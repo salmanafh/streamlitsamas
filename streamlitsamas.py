@@ -165,7 +165,7 @@ def createInvoice(nomor, tanggal, terima_dari = "", pekerjaan = "", jenis_muatan
 
 st.header("Buat Invoice")
 # Create a list of unique values in the column 'Project'
-jenis = st.selectbox('Jenis: ', ("Samas", "MJO"), placeholder="Pilih Jenis")
+jenis = st.selectbox('Jenis: ', ("Samas", "MJU"), placeholder="Pilih Jenis")
 nomor = st.text_input(label='Nomor Invoice: ', placeholder="Nomor", value='')
 terima_dari = st.text_input(label='Telah Terima Dari: ', placeholder="Nama Perusahaan", value='')
 if jenis == "MJO":

@@ -28,14 +28,14 @@ def createInvoice(nomor, tanggal, terima_dari = "", pekerjaan = "", jenis_muatan
     if kwargs:
         sheet = workbook.active
         for _, values in kwargs.items():
-            mjo_input_df = pd.DataFrame(values)
+            MJU_input_df = pd.DataFrame(values)
             
         for row in sheet.iter_rows():
             for cell in row:
                 if cell.value == "=P13*11%":
                     format_rp = cell.number_format
             
-        for i in range(0, len(mjo_input_df) - 1):
+        for i in range(0, len(MJU_input_df) - 1):
             sheet.insert_rows(idx = 12 + i*2, amount = 2)
             border_format_right = copy(sheet.cell(row=10, column=17).border)
             border_format_left = copy(sheet.cell(row=10, column=1).border)
@@ -46,23 +46,23 @@ def createInvoice(nomor, tanggal, terima_dari = "", pekerjaan = "", jenis_muatan
             sheet[f"A{12 + i*2}"].border = border_format_left
             sheet[f"A{12 + i*2 + 1}"].border = border_format_left
         
-        for i in range(0, len(mjo_input_df)):
-            sheet[f"H{10 + i*2}"] = mjo_input_df.iloc[i, 0]
+        for i in range(0, len(MJU_input_df)):
+            sheet[f"H{10 + i*2}"] = MJU_input_df.iloc[i, 0]
             sheet[f"G{10 + i*2}"] = i + 1
             sheet[f"M{10 + i*2}"] = "No. SPK/PO :"
-            sheet[f"N{10 + i*2}"] = mjo_input_df.iloc[i, 1]
-            sheet[f"P{10 + i*2}"] = mjo_input_df.iloc[i, 2]
+            sheet[f"N{10 + i*2}"] = MJU_input_df.iloc[i, 1]
+            sheet[f"P{10 + i*2}"] = MJU_input_df.iloc[i, 2]
             sheet.cell(row = 10 + i*2, column = 16).number_format = format_rp
-            sheet[f"I{11 + i*2}"] = mjo_input_df.iloc[i, 3]
+            sheet[f"I{11 + i*2}"] = MJU_input_df.iloc[i, 3]
             sheet[f"J{11 + i*2}"] = "Tonase :"
-            sheet[f"K{11 + i*2}"] = mjo_input_df.iloc[i, 4]
+            sheet[f"K{11 + i*2}"] = MJU_input_df.iloc[i, 4]
             sheet[f"L{11 + i*2}"] = "Ha"
             koordinate_harga_total = sheet.cell(row = 13 + i*2, column = 16).coordinate
             koordinate_ppn = sheet.cell(row = 14 + i*2, column = 16).coordinate
             koordinate_bersih = sheet.cell(row = 15 + i*2, column = 16).coordinate
             koordinate_bersih_besar = sheet.cell(row = 17 + i*2, column = 2).coordinate
             
-        harga_total = mjo_input_df["harga"].sum()
+        harga_total = MJU_input_df["harga"].sum()
         # write harga total
         sheet[koordinate_harga_total] = harga_total
         
@@ -168,7 +168,7 @@ st.header("Buat Invoice")
 jenis = st.selectbox('Jenis: ', ("Samas", "MJU"), placeholder="Pilih Jenis")
 nomor = st.text_input(label='Nomor Invoice: ', placeholder="Nomor", value='')
 terima_dari = st.text_input(label='Telah Terima Dari: ', placeholder="Nama Perusahaan", value='')
-if jenis == "MJO":
+if jenis == "MJU":
     nomor_faktur = st.text_input(label='Nomor Faktur: ', placeholder="Nomor Faktur", value="")
     jumlah_pekerjaan = st.number_input(label='Jumlah Pekerjaan: ', placeholder="Jumlah Pekerjaan", value=0)
     list_pekerjaan = ["pekerjaan", "nomor_spk", "harga", "nomor_pekerjaann", "tonase"]
@@ -217,7 +217,7 @@ filename = "Invoice {nomor}.xlsx".format(nomor=nomor)
 invoice = False
 col1, col2 = st.columns(2)
 with col1:
-    if jenis == "MJO":
+    if jenis == "MJU":
         if st.button('Buat Invoice'):
             invoice = createInvoice(nomor, terima_dari, tanggal, kwargs=dictionary_pekerjaan)
     else:

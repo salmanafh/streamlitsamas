@@ -219,7 +219,7 @@ col1, col2 = st.columns(2)
 with col1:
     if jenis == "MJU":
         if st.button('Buat Invoice'):
-            invoice = createInvoice(nomor, terima_dari, tanggal, kwargs=dictionary_pekerjaan)
+            invoice = createInvoice(nomor, tanggal, terima_dari, kwargs=dictionary_pekerjaan)
     else:
         if st.button('Buat Invoice'):
             invoice = createInvoice(nomor, tanggal, terima_dari, pekerjaan, jenis_muatan, harga, nomor_volume)

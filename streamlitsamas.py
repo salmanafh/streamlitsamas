@@ -157,7 +157,7 @@ def createInvoice(nomor, tanggal, terima_dari = "", pekerjaan = "", jenis_muatan
     
     # Save the workbook
     sheet.sheet_view.showGridLines = False
-    workbook.save('../invoice.xlsx')
+    workbook.save('invoice.xlsx')
     return True
  
 # with open("C:/Users/salma/OneDrive/Documents/KW-PERMATA BANK.pdf", "rb") as f:
@@ -230,7 +230,7 @@ with col1:
         if st.button('Buat Invoice'):
             invoice = createInvoice(nomor, tanggal, terima_dari, pekerjaan, jenis_muatan, harga, nomor_volume)
 with col2:
-    with open("../invoice.xlsx", "rb") as f:
+    with open("invoice.xlsx", "rb") as f:
         st.download_button(label = 'Download Invoice',
                             data=f.read(),
                             file_name=filename,
@@ -251,7 +251,7 @@ cash_df = pd.read_excel(laporan_cash_in_out).fillna(0)
 min_date = cash_df.Tanggal.min()
 max_date = cash_df.Tanggal.max()
 with st.sidebar:
-    st.image("../logo_samas-removebg-preview.png", use_column_width=True)    
+    st.image("logo_samas-removebg-preview.png", use_column_width=True)    
 
 
 date_range = st.date_input(

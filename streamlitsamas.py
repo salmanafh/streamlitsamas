@@ -246,7 +246,7 @@ if uploaded_file:
 
 
 # Load data from Excel file
-laporan_cash_in_out = pd.ExcelFile("Datasets/Contoh Laporan Cash In -Out Januari 23.xlsx")
+laporan_cash_in_out = pd.ExcelFile("Contoh Laporan Cash In -Out Januari 23.xlsx")
 cash_df = pd.read_excel(laporan_cash_in_out).fillna(0)
 min_date = cash_df.Tanggal.min()
 max_date = cash_df.Tanggal.max()

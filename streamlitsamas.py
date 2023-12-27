@@ -279,7 +279,7 @@ elif pengadaan_plantasi_transportasi == "Pengadaan":
         with vcol1:
             harga = st.number_input(label=f"Harga (Rp): ", placeholder="Rp ", value=0)
         with vcol2:
-            nomor_spk = st.text_input(label=f"Nomor SPK: ", placeholder="Nomor SPK", value="")
+            nomor_spk = st.text_input(label=f"Nomor SPK: ", placeholder="Nomor Proyek", value="")
         volume = False
     else:
         vcol1, vcol2, vcol3 = st.columns(3)
@@ -288,7 +288,7 @@ elif pengadaan_plantasi_transportasi == "Pengadaan":
         with vcol2:
             harga_barang = st.number_input(label=f'Harga Per Kilo (Rp): ', placeholder="Rp", value=0)
         with vcol3: 
-            nomor_spk = st.number_input(label=f'Nomor SPK (Rp): ', placeholder="Rp", value=0)
+            nomor_spk = st.number_input(label=f'Nomor SPK: ', placeholder="Nomor Proyek", value="")
         harga = volume * harga_barang
 elif pengadaan_plantasi_transportasi == "Jasa Transportasi":
     pekerjaan = st.text_input(label='Pekerjaan: ', placeholder="Keterangan Pekerjaan", value='')
@@ -298,7 +298,7 @@ elif pengadaan_plantasi_transportasi == "Jasa Transportasi":
         with vcol1:
             harga = st.number_input(label=f"Harga (Rp): ", placeholder="Rp ", value=0)
         with vcol2:
-            nomor_spk = st.text_input(label=f"Nomor SPK: ", placeholder="Nomor SPK", value="")
+            nomor_spk = st.text_input(label=f"Nomor SPK: ", placeholder="Nomor Proyek", value="")
         volume = False
     else:
         vcol1, vcol2, vcol3 = st.columns(3)
@@ -307,7 +307,7 @@ elif pengadaan_plantasi_transportasi == "Jasa Transportasi":
         with vcol2:
             harga_barang = st.number_input(label=f'Harga Per Kilo (Rp): ', placeholder="Rp", value=0)
         with vcol3: 
-            nomor_spk = st.number_input(label=f'Nomor SPK (Rp): ', placeholder="Rp", value=0)
+            nomor_spk = st.text_input(label=f'Nomor SPK: ', placeholder="Nomor Proyek", value="")
         harga = volume * harga_barang
 
 tanggal = st.date_input('Tanggal: ', datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=7))))
